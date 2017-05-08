@@ -1,0 +1,53 @@
+<html>
+<head><title></title></head>
+<body>
+<script type="text/javascript">
+var socket;
+if (!window.WebSocket) {
+  window.WebSocket = window.MozWebSocket;
+}
+if (window.WebSocket) {
+   var str=location.href; 
+   var num=str.indexOf("?");
+   name=str.substr(num+1);
+var rd= GetRandomNum(1,10); 
+  socket = new WebSocket("ws://localhost:9999/websocket/?name=fyc"+rd);
+  socket.onmessage = function(event) {
+     var div = document.createElement("div");
+     div.innerHTML = event.data;
+      document.getElementById("chat").appendChild(div)		  
+};
+  socket.onopen = function(event) {
+    console.log("websocket 打开了");
+  };
+  socket.onclose = function(event) {
+    console.log("websocket 关闭了");
+  };
+}
+
+function GetRandomNum(Min,Max)
+{   
+var Range = Max - Min;   
+var Rand = Math.random();   
+return(Min + Math.round(Rand * Range));   
+}   
+
+function send(message) {
+  if (!window.WebSocket) { return; }
+  if (socket.readyState == WebSocket.OPEN) {
+    socket.send(message);
+  } else {
+    alert("The socket is not open.");
+  }
+}
+
+
+</script>
+<form onsubmit="return false;">
+  发消息：<input type="text" name="message" value="" placeholder="say sth">
+  <input type="button" value="Send Web Socket Data" onclick="send(this.form.message.value)" />
+</form>
+<div id = "chat">
+</div>
+</body>
+</html>
